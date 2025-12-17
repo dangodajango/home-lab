@@ -6,7 +6,7 @@ COPY src src
 
 RUN mvn clean install
 
-FROM gcr.io/distroless/java21-debian12 AS run
+FROM amazoncorretto:21 AS run
 
 WORKDIR /app
 COPY --from=build /app/target/*.jar logger.jar

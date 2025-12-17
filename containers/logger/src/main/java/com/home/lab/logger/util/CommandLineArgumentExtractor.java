@@ -1,6 +1,5 @@
 package com.home.lab.logger.util;
 
-import java.net.URI;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Optional;
@@ -67,9 +66,10 @@ public class CommandLineArgumentExtractor {
             throw new IllegalArgumentException("Invalid input for argument plf (PathToLogFile): the value must not be blank");
         }
         try {
-            commandLineArguments.setPathToLogFile(Path.of(URI.create(value)));
+            commandLineArguments.setPathToLogFile(Path.of(value));
         } catch (Exception exception) {
-            throw new IllegalArgumentException("Invalid input for argument plf (PathToLogFile): the value must be a valid path");
+            exception.printStackTrace();
+            throw new IllegalArgumentException("Invalid input for argument plf (PathToLogFile): the value (%s) must be a valid path".formatted(value));
         }
     }
 
