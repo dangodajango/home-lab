@@ -8,8 +8,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.home.lab</groupId>
-    <artifactId>logger</artifactId>
-    <version>1.0.1</version>
+    <artifactId>log-transformer</artifactId>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -36,7 +36,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.home.lab.logger.Logger</mainClass>
+                            <mainClass>com.home.lab.logger.LogTransformer</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

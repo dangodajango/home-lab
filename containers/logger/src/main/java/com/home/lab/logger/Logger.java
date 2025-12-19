@@ -1,7 +1,6 @@
 package com.home.lab.logger;
 
-import com.home.lab.logger.util.CommandLineArgumentExtractor;
-import com.home.lab.logger.util.CommandLineArgumentExtractor.CommandLineArguments;
+import com.home.lab.logger.CommandLineArgumentExtractor.CommandLineArguments;
 
 import java.io.IOException;
 import java.nio.file.Files;

@@ -1,4 +1,4 @@
-package com.home.lab.logger.util;
+package com.home.lab.logger;
 
 import java.nio.file.Path;
 import java.util.Arrays;
