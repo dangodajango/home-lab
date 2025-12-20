@@ -11,12 +11,14 @@ public class Logger {
 
     public static void main(String[] args) {
         try {
+            Heartbeat.startHeartbeatThread();
             CommandLineArguments commandLineArguments = CommandLineArgumentExtractor.extractCommandLineArguments(args);
             commandLineArguments.getNumberOfLogsToProduce()
                     .ifPresentOrElse(
                             numberOfLogsToProduce -> produceFixedNumberOfLogs(numberOfLogsToProduce, commandLineArguments),
                             () -> produceInfiniteNumberOfLogs(commandLineArguments)
                     );
+            System.exit(0);
         } catch (Exception exception) {
             System.err.println(exception.getMessage());
             System.exit(1);

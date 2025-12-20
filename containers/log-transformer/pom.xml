@@ -36,7 +36,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.home.lab.logger.LogTransformer</mainClass>
+                            <mainClass>com.home.lab.logtransformer.LogTransformer</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

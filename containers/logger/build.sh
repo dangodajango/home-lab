@@ -2,7 +2,7 @@
 set -e
 
 IMAGE_NAME="dangodajango/logger"
-IMAGE_TAG="1.0.1"
+IMAGE_TAG="1.0.2"
 
 docker build -t "$IMAGE_NAME:$IMAGE_TAG" .
 
