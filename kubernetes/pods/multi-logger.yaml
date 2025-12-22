@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: multi-logger
+  name: multi-logger
+spec:
+  containers:
+    - image: dangodajango/logger:1.0.2
+      name: logger
+      restartPolicy: Always
+      imagePullPolicy: Always
+      args: [ "ltf=true", "plf=/tmp/logs/file" ]
+      volumeMounts:
+        - name: logs
+          mountPath: /tmp/logs
+        - name: heartbeat
+          mountPath: /tmp/heartbeat
+    - image: dangodajango/log-transformer:1.0.0
+      name: log-transformer
+      restartPolicy: Never
+      imagePullPolicy: Always
+      env:
+        - name: PATH_TO_HEARTBEAT_FILE
+          value: /tmp/heartbeat/heartbeat
+        - name: "TIME_BETWEEN_HEARTBEAT_CHECKS_MILLIS"
+          value: "20000"
+      volumeMounts:
+        - name: logs
+          mountPath: /tmp/logs
+        - name: transformed
+          mountPath: /tmp/transformed
+        - name: heartbeat
+          mountPath: /tmp/heartbeat
+  volumes:
+    - name: heartbeat
+      emptyDir: { }
+    - name: logs
+      emptyDir: { }
+    - name: transformed
+      emptyDir: { }

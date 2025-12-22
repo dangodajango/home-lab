@@ -11,4 +11,4 @@ FROM amazoncorretto:21 AS run
 WORKDIR /app
 COPY --from=build /app/target/*.jar log-transformer.jar
 
-ENTRYPOINT ["java", "-jar", " log-transformer.jar"]
+ENTRYPOINT ["java", "-jar", "log-transformer.jar"]

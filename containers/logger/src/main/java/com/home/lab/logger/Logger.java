@@ -65,6 +65,7 @@ public class Logger {
             Files.writeString(pathToFile, logMessage);
         } catch (IOException exception) {
             System.err.printf("Could not produce a log to the file %s%n", pathToFile.getFileName());
+            exception.printStackTrace();
             throw new IllegalStateException(exception.getMessage());
         }
     }

@@ -10,6 +10,9 @@ The application only produces logs and can be configured to write them to standa
 It can generate a finite or infinite number of logs and can also be run in a mode where it remains active without
 performing any actions.
 
+During the lifetime of the application, a heartbeat periodically runs and updates the last modification date of a file.
+The default path for the file is /tmp/heartbeat/heartbeat.
+
 ## Setup
 
 We are using Maven primarily as a build tool, which allows us to package the application easily.

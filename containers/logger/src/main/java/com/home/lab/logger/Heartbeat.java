@@ -7,7 +7,7 @@ import java.time.Instant;
 
 public class Heartbeat {
 
-    private static final String DEFAULT_PATH_TO_HEARTBEAT_FILE = "/tmp/heartbeat";
+    private static final String DEFAULT_PATH_TO_HEARTBEAT_FILE = "/tmp/heartbeat/heartbeat";
     private static final long TIMEOUT_BETWEEN_HEARTBEATS = 10000;
 
     public static void startHeartbeatThread() {
