@@ -127,6 +127,54 @@ We can also use the -h flag to get details about all available CLI arguments.
 
 ## Sidecar containers
 
+Sidecar containers are containers that host logic which helps the main container in some way. They are useful in
+situations where we do not want to couple additional functionality to the main application, but instead want it to be
+externalized and possibly reused by different processes.
+
+For example, software that transforms or aggregates the logs of the main application so they can be processed by an
+external system. If this logic were embedded in the main application, it would need to be copied and pasted across
+multiple services. By configuring it as a separate process and running it as a separate container within the same pod,
+both containers become tightly coupled in the desired way: the log transformer cannot do anything on its own and depends
+entirely on the main application.
+
+For the sake of the CKAD exam, we will discuss sidecar containers purely as a pattern. The implementation will simply be
+a second container listed alongside the main container in the pod specification. In recent versions of Kubernetes,
+sidecar containers are considered a subtype of init containers. However, unlike init containers, sidecars do not block
+the main application from starting and are allowed to be long-running. In this discussion, we will treat them as regular
+application containers rather than init containers. Functionally, they work the same way, with the main difference being
+that init containers always start before the main application container.
+
+To create a sidecar container, all we need to do is add another container to the container list in the pod manifest.
+Technically, nothing prevents us from running any kind of container as a sidecar, even if it is not a supporting
+container. However, the downside is that all containers in a pod are scheduled on the same node, so if the node fails,
+all containers in the pod fail as well.
+
+One benefit of sidecar containers is that they share the same network namespace. This allows all containers in a pod to
+communicate over localhost. For example, if container A is listening on port 9090, container B can access it via
+localhost:9090. The downside of this shared network is that if one container binds to port 9090, the other containers
+must use different ports.
+
+When it comes to resources, each container in a pod can have its own requests and limits. The effective resource
+requests and limits for the pod are the sum of the requests and limits of all containers within the pod. For example, if
+a pod has two containers and the first requests 5 GB of memory while the second requests 3 GB, the pod will request a
+total of 8 GB of memory, because the containers are expected to run simultaneously.
+
+It is also possible, via configuration, to enable all containers in a pod to share a process namespace. This allows one
+container to send signals to processes running in another container, and vice versa.
+
+To share state between containers running in the same pod, we often use volumes. The simplest setup is an emptyDir
+volume, which has the same lifecycle as the pod. When the pod is terminated, all data in the volume is deleted. The
+volume can be mounted into all containers at a specific directory, allowing them to share its contents. If one container
+creates, deletes, or modifies a file, the change is immediately visible to the other containers.
+
+When a pod has multiple containers, and we want to apply a container-specific command using kubectl (for example, kubectl
+logs or kubectl exec), the command is applied by default to the first container listed in the pod specification. We can
+use the -c flag to explicitly specify which container the command should target, for example:
+
+```shell
+kubectl logs pod-name -c container-2
+```
+
 ## Init containers
 
 ## Ephemeral containers
