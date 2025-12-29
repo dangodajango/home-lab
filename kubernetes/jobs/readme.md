@@ -50,7 +50,47 @@ running Pods are terminated.
 
 ## Declarative approach
 
+These are the essential YAML configurations specific to Job resources. For the Pod template, refer to the notes for Pods
+themselves.
+
+```yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-name
+spec:
+  completions: 3
+  parallelism: 5
+  backoffLimit: 4
+  activeDeadlineSeconds: 3600
+  template:
+    spec:
+      containers:
+        - name: pi
+          image: perl:5.34.0
+          command: [ "perl", "-Mbignum=bpi", "-wle", "print bpi(2000)" ]
+      restartPolicy: Never
+```
+
+In this example, we use a simple Perl script to calculate Pi. We can customize the Pod specification as we normally
+would for a Pod, but here we focus on the Job configuration.
+
+We can see that completions is set to 3, which means we want three Pods to be executed and finish successfully.
+parallelism is set to 5, but since completions is limited to 3, the Job will start only three Pods. This is because the
+completion count is explicit, and there is no need to run more Pods than the number of required successful executions.
+
 ## Imperative approach
+
+If we are trying to be quick in the CKAD exam, we should start with an imperative command using --dry-run=client and -o
+yaml, and save the generated manifest to a file. This gives us the basic structure of the manifest, after which we can
+add properties such as completions, parallelism, and others.
+
+```shell
+kubectl create job job-name --image=busybox:latest --dry-run=client -o yaml > job.yaml
+```
+
+We cannot configure most Job properties directly from the kubectl create command, so they need to be defined manually in
+the manifest.
 
 ## Automatic cleanup for finished jobs
 
@@ -67,6 +107,77 @@ elapsed, the controller deletes the Job along with all associated resources. Oth
 The TTL-after-finished controller is enabled automatically on the cluster. The only action required from the user is to
 add the ttlSecondsAfterFinished property to the Job manifest. When the Job is created, the property will be present, and
 the controller will handle cleanup once the Job completes.
+
+Note that we can also edit terminated Jobs and add this property. However, keep in mind that if we set
+ttlSecondsAfterFinished to, for example, 30 seconds, the countdown starts from the time the Job finished, not from the
+time the property was applied. As a result, the Job may be deleted immediately if more than 30 seconds have already
+passed since it terminated.
+
+## Completion Mode
+
+When a Job has a fixed completions count (that is, when completions is specified and not null), we can customize the
+completionMode. The completion mode defines how the successful termination of Pods created by the Job is counted toward
+the specified completions value.
+
+There are two completion modes: NonIndexed and Indexed. If no mode is specified, the default is NonIndexed.
+
+### NonIndexed jobs
+
+NonIndexed is the default behavior for a Job. In this mode, the only requirement is that the number of successfully
+completed Pods equals the completions count. All Pods are treated identically; it does not matter which Pod succeeds, as
+long as the required number of successful completions is reached.
+
+Even if parallelism is greater than 1 and some Pods fail, new Pods may be created to replace them. As long as enough
+Pods eventually succeed, the Job will be considered complete.
+
+### Indexed jobs
+
+Indexed Jobs work differently from non-indexed Jobs. Each Pod is assigned a unique index with a value from 0 to
+completions - 1 (similar to array indexing). Each completion is tied to a specific index, and in order for the Job to be
+considered complete, all indices must complete successfully.
+
+For example, if we configure completions: 3, the Job will create three Pods with indices 0, 1, and 2. When the Pod with
+index 0 terminates successfully, index 0 is considered complete, and the same applies to the other indices. If a Pod
+associated with a given index fails, a new Pod is created with the same index and retried until it succeeds or the
+failure limit is reached.
+
+Indexed Jobs are useful when each Pod must execute a specific part of a task. For example, each Pod in the Job can
+process a distinct chunk of data or a specific set of files, and we want to avoid clashes between Pods. With indexing,
+we know that the Pod with index 0 will process a specific chunk, and the same applies to the other Pods.
+
+This feature is not strictly tied to the parallelism property, but it is most useful when used in combination with it.
+If we set parallelism to 1 and completions to 3 in indexed mode, Kubernetes will still assign a unique index to each
+Pod, but the Pods will run sequentially. In this case, the benefit of indexing is limited. Indexed Jobs are most
+effective when parallelism is greater than 1. For example, with parallelism: 3, Kubernetes will start three Pods
+simultaneously, each with its own index. If one Pod fails, a new Pod is created with the same index and retried.
+
+To determine the index assigned to a Pod, Kubernetes automatically adds a label and an annotation named
+batch.kubernetes.io/job-completion-index. Additionally, an environment variable named JOB_COMPLETION_INDEX is made
+available inside the Pod, allowing the workload to split and process tasks programmatically based on the index.
+
+To handle Pod failures, in addition to the backoffLimit property, which behaves the same way as in non-indexed
+Jobs, indexed Jobs can also use backoffLimitPerIndex. This property tracks failures at the index level rather than
+globally.
+
+For example, if we have three indices and set backoffLimitPerIndex to 3, the Pod with index 0 may fail twice and then
+succeed, and the Pod with index 1 may also fail twice and then succeed. Neither will exceed the retry limit because
+failures are tracked separately for each index.
+
+When backoffLimitPerIndex is specified, the backoffLimit property is ignored.
+
+## Non-fixed completion count jobs
+
+This behavior occurs when we set completions to null and set parallelism to a value greater than 1. In this
+configuration, the Job will create a number of Pods equal to the parallelism value. It is then up to the applications
+running inside the Pods to coordinate their work. Once any Pod terminates successfully, the entire Job is marked as
+successful, and all remaining Pods are terminated, respecting their graceful shutdown.
+
+When a Pod fails, a new one is created, and retries respect the backoffLimit. This works the same way as with Jobs that
+have a fixed completion count.
+
+For Jobs with a non-fixed completion count, we cannot use completionMode or backoffLimitPerIndex.
+
+## Cron jobs
 
 ## Resources
 
