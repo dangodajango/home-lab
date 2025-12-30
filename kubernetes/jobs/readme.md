@@ -177,8 +177,6 @@ have a fixed completion count.
 
 For Jobs with a non-fixed completion count, we cannot use completionMode or backoffLimitPerIndex.
 
-## Cron jobs
-
 ## Resources
 
 https://kubernetes.io/docs/concepts/workloads/controllers/job/

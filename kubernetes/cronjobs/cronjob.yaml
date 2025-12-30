@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cron-job-1
+spec:
+  startingDeadlineSeconds: 30
+  concurrencyPolicy: Replace
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    metadata:
+      name: cron-job-1
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - image: busybox
+            name: cron-job-1
+            command:
+              - /bin/sh
+              - -c
+              - date; echo "John 3:16"
+  schedule: '* * * * *'
