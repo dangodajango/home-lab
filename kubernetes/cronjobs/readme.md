@@ -129,7 +129,15 @@ kubectl create cj --help
 Available macros:
 
 @yearly or @annually - 0 0 1 1 * - Runs once a year at midnight at 1st of January
+
 @monthly - 0 0 1 * * - Run once a month at midnight of the first day of the month
+
 @weekly - 0 0 * * 0 - Run once a week at midnight on Sunday morning
+
 @daily or @midnight - 0 0 * * * - Run once a day at midnight
+
 @hourly - 0 * * * * - Run once an hour at the beginning of the hour
+
+## Sources
+
+https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/
