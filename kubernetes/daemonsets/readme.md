@@ -37,8 +37,8 @@ manifest. If the selector includes an expression that matches existing Pods, tho
 DaemonSet. However, the DaemonSet will still create a new Pod on the node, even if an existing Pod matches the label
 criteria (this behaviour differs between the different workload controllers).
 
-A DaemonSet only manages Pods that it creates. For a Pod to be created and managed by a DaemonSet—or any other workload
-controller—it must have:
+A DaemonSet only manages Pods that it creates. For a Pod to be created and managed by a DaemonSet - or any other
+workload controller - it must have:
 
 - An internal ownerReference pointing to the controller
 - Labels that match the controller’s selector

@@ -216,7 +216,8 @@ request and limit for the entire pod will be 3 and 5.
 ## Ephemeral containers
 
 If we are following best practices when creating container images for our pods, we should always use scratch or
-distroless base images and include only the tools necessary to run the software—for example, the JDK and the application
+distroless base images and include only the tools necessary to run the software - for example, the JDK and the
+application
 JAR. We should not include tools such as curl, netstat, vim, or even a shell. Without a shell, we cannot connect to the
 container directly, as commands like kubectl exec -it … -- sh will not work. Such minimal base images are used to reduce
 the attack surface of the Kubernetes cluster.
@@ -225,7 +226,7 @@ In cases where the main application container lacks tooling or a shell, troubles
 difficult, since we can do little more than run the application itself. For these scenarios, Kubernetes provides
 ephemeral containers.
 
-Once a pod is created, it is essentially immutable—we cannot attach a new regular container to it. For a long time (
+Once a pod is created, it is essentially immutable - we cannot attach a new regular container to it. For a long time (
 prior to Kubernetes v1.25), there was no direct solution for debugging distroless containers. Starting with Kubernetes
 v1.25, ephemeral containers were introduced. These are dynamically created containers that are attached to an existing
 pod. Their specification is not defined under the containers or initContainers fields, but under ephemeralContainers.
