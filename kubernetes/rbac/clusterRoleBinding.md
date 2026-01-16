@@ -2,7 +2,7 @@
 
 ## Theory
 
-A ClusterRoleBinding serves the same purpose as a regular RoleBinding — it attaches a ClusterRole to one or more
+A ClusterRoleBinding serves the same purpose as a regular RoleBinding, it attaches a ClusterRole to one or more
 subjects. The key differences are:
 
 - It is a cluster-scoped resource, not namespaced.

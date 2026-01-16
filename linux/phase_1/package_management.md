@@ -95,9 +95,8 @@ apt search nginx
 
 ### DNF (Dandified YUM)
 
-DNF follows the same principles as APT, but it is used by a different set of distributions—RPM-based ones such as
-Fedora,
-RHEL, CentOS, and others.
+DNF follows the same principles as APT, but it is used by a different set of distributions - RPM-based ones such as
+Fedora, RHEL, CentOS, and others.
 
 Like APT, DNF is not a single tool but a complete system of binaries. Just as dpkg is used by APT, DNF relies on rpm,
 which actually installs packages in the .rpm format. On top of that, there is the higher-level DNF software, which
