@@ -19,8 +19,7 @@ as it is for learning purposes.
 2. Linux Distros 
 3. Linux filesystem 
 4. Package management 
-5. Environment variables 
-6. Basic commands
+5. Environment variables
 
 ### Phase 2 - Shell
 
