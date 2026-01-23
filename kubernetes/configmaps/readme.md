@@ -130,9 +130,8 @@ spec:
 ```
 
 This will create two files in the mounted directory - game.properties and user-interface.properties, and write the
-contents
-of their corresponding values into them. If we omit the items array, Kubernetes will create a file for each key-value
-pair in the ConfigMap, even if the value is a single line.
+contents of their corresponding values into them. If we omit the items array, Kubernetes will create a file for each
+key-value pair in the ConfigMap, even if the value is a single line.
 
 ## Imperative approach
 
